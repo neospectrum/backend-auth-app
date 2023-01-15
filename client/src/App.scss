@@ -1,0 +1,179 @@
+@use 'sass:math';
+@import './styles/null.scss';
+@import './styles/fonts.scss';
+@import './styles/mixins.scss';
+
+$fontFamily: 'Ubuntu';
+$fontSize: rem(30);
+
+$minWidth: 320;
+$maxWidth: 1920;
+$maxWidthContainer: 1170;
+$containerPadding: 30;
+$containerWidth: $maxWidthContainer + $containerPadding;
+
+$pc: em($containerWidth);
+$tablet: em(991.98);
+$mobile: em(767.98);
+$mobileSmall: em(479.98);
+
+$responsiveType: 1;
+@if ($responsiveType==1) {
+    [class*='__container'] {
+        @if ($maxWidthContainer>0) {
+            max-width: rem($maxWidthContainer);
+            box-sizing: content-box;
+            margin: 0 auto;
+        }
+        @if ($containerPadding>0) {
+            padding: 0 rem(math.div($containerPadding, 2));
+        }
+    }
+} @else {
+    [class*='__container'] {
+        margin: 0 auto;
+        @if ($maxWidthContainer>0) {
+            max-width: rem($maxWidthContainer);
+            box-sizing: content-box;
+        } @else {
+            @if ($containerPadding>0) {
+                padding: 0 rem(math.div($containerPadding, 2));
+            }
+        }
+        @media (max-width: $pc) {
+            max-width: rem(970);
+        }
+        @media (max-width: $tablet) {
+            max-width: rem(750);
+        }
+        @media (max-width: $mobile) {
+            max-width: none;
+            @if ($containerPadding>0 and $maxWidthContainer>0) {
+                padding: 0 rem(math.div($containerPadding, 2));
+            }
+        }
+    }
+}
+
+$color-bg: #141414;
+/* $color: rgba(255, 255, 255, 0.8); */
+/* $color: rgba(50, 50, 50, 0.9); */
+$color-black: rgba(0, 0, 0, 0.4);
+$color-white: #fff;
+$color-gray: #666;
+$color-purple: #a8f;
+$color-green: #7d5;
+$color-red: #d55;
+$color-orange: #ea5;
+$color-blue: #59e;
+$color-gradient: linear-gradient(45deg, #f66 20%, #6d4 50%, #8af 70%);
+
+$border-radius: 5px;
+$border: 2px solid $color-blue;
+$box-shadow: 0px 0px 10px white;
+
+.wrapper {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    background-color: rgb(28, 28, 28);
+    gap: 15px;
+    font-size: $fontSize;
+    font-family: $fontFamily;
+}
+
+a {
+    color: $color-white;
+}
+header {
+    position: sticky;
+    z-index: 100;
+    width: 100%;
+    background-color: $color-blue;
+}
+main {
+    display: flex;
+}
+aside {
+    display: grid;
+    max-width: 300px;
+    gap: 5px;
+    & a {
+        color: $color-blue;
+        padding: 5px 10px;
+        transition: background-color 0.2s ease-in-out 0s;
+    }
+    & a:hover {
+        border-radius: $border-radius;
+        background-color: $color-gray;
+    }
+}
+a.active {
+    color: rgba($color: $color-blue, $alpha: 1.5);
+}
+
+.container {
+    max-width: rem($maxWidthContainer);
+    margin: 0px auto;
+}
+
+form {
+    display: flex;
+    flex-flow: column;
+    gap: 15px;
+    padding: 20px;
+    max-width: em(440);
+    background-color: $color-white;
+    border-radius: $border-radius;
+    border: $border;
+    box-shadow: $box-shadow;
+}
+
+label {
+    font-size: 1em;
+}
+
+input {
+    border-radius: $border-radius;
+    border: $border;
+    box-shadow: $box-shadow;
+    padding: 10px;
+    font-size: 1em;
+}
+
+button {
+    border-radius: $border-radius;
+    padding: 15px 10px;
+    background-color: $color-blue;
+    color: $color-white;
+    font-size: 1.1em;
+    &:disabled {
+        background-color: rgba($color: $color-blue, $alpha: 0.5);
+    }
+}
+
+.errors {
+    color: $color-red;
+}
+.layout {
+    padding: 10px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.header {
+    &__body {
+        min-height: rem(70);
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+}
+
+.login {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
