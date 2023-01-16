@@ -25,7 +25,7 @@ export enum RouteNames {
     REGISTRATION_ROUTE = '/registration',
 }
 export const publicRoutes: IRoute[] = [
-    { path: RouteNames.HOME_ROUTE, element: Home },
+    // { path: RouteNames.HOME_ROUTE, element: Home },
     { path: RouteNames.LOGIN_ROUTE, element: Auth },
     { path: RouteNames.REGISTRATION_ROUTE, element: Auth },
 ];

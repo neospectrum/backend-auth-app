@@ -5,6 +5,7 @@ import { RouteNames } from '../routes/routes';
 
 export const Home = () => {
     const { logOut } = useActions();
+    // const { data } = useGetUsersQuery('');
     return (
         <div className='wrapper'>
             <header className='header'>
@@ -33,7 +34,7 @@ export const Home = () => {
                     <NavLink to={RouteNames.FAVORITE_ROUTE}>Favorites</NavLink>
                     <NavLink to={RouteNames.SETTINGS_ROUTE}>Settings</NavLink>
                 </aside>
-                <main>Contetn</main>
+                {/* <main>{data && data.map((user) => <>{JSON.stringify(user)}</>)}</main> */}
             </div>
         </div>
     );

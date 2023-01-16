@@ -12,6 +12,7 @@ export const Router = () => {
                 ? privateRoutes.map((route) => {
                       return (
                           <Route
+                              key={route.path}
                               path={route.path}
                               element={<route.element />}
                           />
@@ -20,6 +21,7 @@ export const Router = () => {
                 : publicRoutes.map((route) => {
                       return (
                           <Route
+                              key={route.path}
                               path={route.path}
                               element={<route.element />}
                           />

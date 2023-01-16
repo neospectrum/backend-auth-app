@@ -1,8 +1,10 @@
 import { Formik } from 'formik';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Input } from '../components/Input';
 import { useActions } from '../hooks/useActions';
+import { RouteNames } from '../routes/routes';
+import { useLoginMutation, useRegistrationMutation } from '../services/user';
 
 interface IErrors {
     email?: string;
@@ -10,8 +12,16 @@ interface IErrors {
 }
 
 export const Auth = () => {
-    const navigate = useNavigate();
     const { signIn } = useActions();
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const [register] = useRegistrationMutation();
+    const [login] = useLoginMutation();
+
+    const isLogin = RouteNames.LOGIN_ROUTE === location.pathname;
+
     return (
         <div className='wrapper'>
             <div className='login'>
@@ -35,13 +45,28 @@ export const Auth = () => {
                             }
                             return errors;
                         }}
-                        onSubmit={(values, { setSubmitting }) => {
-                            setTimeout(() => {
-                                alert(JSON.stringify(values, null, 2));
+                        onSubmit={async (values, { setSubmitting }) => {
+                            try {
+                                let user;
+                                if (isLogin) {
+                                    const result = await login({
+                                        email: values.email,
+                                        password: values.password,
+                                    }).unwrap();
+                                    user = result;
+                                } else {
+                                    const result = await register({
+                                        email: values.email,
+                                        password: values.password,
+                                    }).unwrap();
+                                    user = result;
+                                }
+                                signIn(user);
                                 setSubmitting(false);
-                                signIn({ email: values.email });
                                 navigate('/');
-                            }, 400);
+                            } catch (error) {
+                                console.log(error);
+                            }
                         }}
                     >
                         {({
@@ -52,10 +77,9 @@ export const Auth = () => {
                             handleBlur,
                             handleSubmit,
                             isSubmitting,
-                            isValid,
-                            isValidating,
                         }) => (
                             <form onSubmit={handleSubmit}>
+                                {isLogin ? <>Sign In</> : <>Register</>}
                                 <Input
                                     type='email'
                                     name='email'
