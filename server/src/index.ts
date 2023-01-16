@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import { router } from './routes/index.js';
+import { errorMiddleware } from './middleware/errorMiddleware.js';
 
 dotenv.config();
 
@@ -17,10 +18,11 @@ const db = process.env.MONGO_URL || '';
 const app = express();
 
 app.use(morgan('dev'));
-app.use(cors({ origin }));
+app.use(cors({ origin, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api', router);
+app.use(errorMiddleware);
 
 const start = async () => {
     try {
