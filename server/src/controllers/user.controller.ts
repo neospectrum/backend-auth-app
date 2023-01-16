@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
+import { ApiError } from '../error/ApiError.js';
 import { userService } from '../services/user.service.js';
 
 interface UserAuthData {
@@ -20,12 +21,14 @@ interface CustomRequestWithCookie<T> extends Request {
     cookies: T;
 }
 
+const clientURL = process.env.ORIGIN_URL || '';
+
 class UserController {
     async registration(req: CustomRequest<UserAuthData>, res: Response, next: Function) {
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                return next();
+                return next(ApiError.badRequest('Ошибка при валидации', errors.array()));
             }
 
             const { email, password } = req.body;
@@ -64,9 +67,37 @@ class UserController {
             next(error);
         }
     }
-    async activate(req: Request, res: Response, next: Function) {}
-    async refresh(req: Request, res: Response, next: Function) {}
-    async getUsers(req: Request, res: Response, next: Function) {}
+    async activate(req: Request, res: Response, next: Function) {
+        try {
+            const activationLink = req.params.link;
+            await userService.activate(activationLink);
+            return res.redirect(clientURL);
+        } catch (error) {
+            next(error);
+        }
+    }
+    async refresh(req: CustomRequestWithCookie<UserRefreshToken>, res: Response, next: Function) {
+        try {
+            const { refreshToken } = req.cookies;
+            const userData = await userService.refresh(refreshToken);
+
+            res.cookie('refreshToken', userData?.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
+            return res.json(userData);
+        } catch (error) {
+            next(error);
+        }
+    }
+    async getUsers(req: Request, res: Response, next: Function) {
+        try {
+            const users = await userService.getUsers();
+            return res.json(users);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export const userController = new UserController();

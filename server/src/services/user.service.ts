@@ -1,6 +1,7 @@
 import { hashSync, compare, genSaltSync } from 'bcrypt';
 import { v4 as generateIdV4 } from 'uuid';
 import { UserDto } from '../dtos/user.dto.js';
+import { ApiError } from '../error/ApiError.js';
 import { TokenModel } from '../models/token.model.js';
 
 import { UserModel } from '../models/user.model.js';
@@ -12,7 +13,9 @@ class UserService {
             const candidate = await UserModel.findOne({ email });
 
             if (candidate) {
-                throw Error();
+                throw ApiError.badRequest(
+                    `Пользователь с почтовым адресом ${email} уже существует`,
+                );
             }
 
             const salt = genSaltSync(5);
@@ -37,11 +40,11 @@ class UserService {
         try {
             const candidate = await UserModel.findOne({ email });
             if (!candidate) {
-                throw Error();
+                throw ApiError.badRequest('Пользователь с таким email не найден');
             }
             const isCorrectPassword = compare(password, candidate.password);
             if (!isCorrectPassword) {
-                throw Error();
+                throw ApiError.badRequest('Неверный пароль');
             }
 
             const userDto = new UserDto(candidate);
@@ -59,6 +62,48 @@ class UserService {
     async logout(refreshToken: string) {
         const token = await tokenService.removeToken(refreshToken);
         return token;
+    }
+    async activate(activationLink: string) {
+        try {
+            const user = await UserModel.findOne({ activationLink });
+            if (!user) {
+                throw ApiError.badRequest('Неккоректная ссылка активации');
+            }
+            user.isActivated = true;
+            await user.save();
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async refresh(refreshToken: string) {
+        try {
+            if (!refreshToken) {
+                throw ApiError.unauthorized();
+            }
+            const userData = await tokenService.validateRefreshToken(refreshToken);
+            const token = await tokenService.findToken(refreshToken);
+            if (!userData || !token) {
+                throw ApiError.unauthorized();
+            }
+            if (typeof userData === 'string') {
+                throw ApiError.unauthorized();
+            }
+
+            const user = await UserModel.findById(userData.id);
+            const userDto = new UserDto(user);
+            const tokens = await tokenService.generateTokens({ ...userDto });
+
+            return {
+                ...tokens,
+                user: userDto,
+            };
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    async getUsers() {
+        const users = await UserModel.find();
+        return users;
     }
 }
 
