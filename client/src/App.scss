@@ -95,6 +95,7 @@ header {
 }
 main {
     display: flex;
+    padding: 5px;
 }
 aside {
     display: grid;
@@ -103,10 +104,10 @@ aside {
     & a {
         color: $color-blue;
         padding: 5px 10px;
-        transition: background-color 0.2s ease-in-out 0s;
+        transition: all 0.2s ease-in-out 0s;
+        border-radius: $border-radius;
     }
     & a:hover {
-        border-radius: $border-radius;
         background-color: $color-gray;
     }
 }
