@@ -3,6 +3,7 @@ import { v4 as generateIdV4 } from 'uuid';
 import { UserDto } from '../dtos/user.dto.js';
 import { ApiError } from '../error/ApiError.js';
 import { TokenModel } from '../models/token.model.js';
+import colors from 'colors';
 
 import { UserModel } from '../models/user.model.js';
 import { tokenService } from './token.service.js';
@@ -26,6 +27,10 @@ class UserService {
             const userDto = new UserDto(user);
 
             const tokens = await tokenService.generateTokens({ ...userDto });
+
+            if (!tokens) {
+                throw ApiError.notFound('TOKENS NOT FOUND');
+            }
             await tokenService.saveToken(user.id, tokens.refreshToken);
 
             return {
@@ -50,6 +55,9 @@ class UserService {
             const userDto = new UserDto(candidate);
             const tokens = await tokenService.generateTokens({ ...userDto });
 
+            if (!tokens) {
+                throw ApiError.notFound('TOKENS NOT FOUND');
+            }
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
             return {
                 ...tokens,
@@ -80,8 +88,10 @@ class UserService {
             if (!refreshToken) {
                 throw ApiError.unauthorized();
             }
+
             const userData = await tokenService.validateRefreshToken(refreshToken);
             const token = await tokenService.findToken(refreshToken);
+
             if (!userData || !token) {
                 throw ApiError.unauthorized();
             }
@@ -93,6 +103,11 @@ class UserService {
             const userDto = new UserDto(user);
             const tokens = await tokenService.generateTokens({ ...userDto });
 
+            if (!tokens) {
+                throw ApiError.notFound('TOKENS NOT FOUND');
+            }
+
+            await tokenService.saveToken(userDto.id, tokens?.refreshToken);
             return {
                 ...tokens,
                 user: userDto,

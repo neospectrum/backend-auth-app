@@ -1,8 +1,12 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import dotenv from 'dotenv';
+import colors from 'colors';
 
 import { ApiError } from '../error/ApiError.js';
 import { userService } from '../services/user.service.js';
+
+dotenv.config();
 
 interface UserAuthData {
     email: string;
@@ -33,7 +37,7 @@ class UserController {
 
             const { email, password } = req.body;
             const userData = await userService.registration(email, password);
-
+            console.log(userData?.refreshToken);
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
@@ -79,6 +83,7 @@ class UserController {
     async refresh(req: CustomRequestWithCookie<UserRefreshToken>, res: Response, next: Function) {
         try {
             const { refreshToken } = req.cookies;
+
             const userData = await userService.refresh(refreshToken);
 
             res.cookie('refreshToken', userData?.refreshToken, {
