@@ -12,7 +12,7 @@ export class ApiError extends Error {
         return new ApiError(400, message, errors);
     }
     static unauthorized(errors: Array<any> = []) {
-        return new ApiError(401, 'User authorized');
+        return new ApiError(401, 'User unauthorized');
     }
     static forbidden(message: string, errors: Array<any> = []) {
         return new ApiError(403, message, errors);
