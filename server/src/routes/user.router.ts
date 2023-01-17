@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 
 import { userController } from '../controllers/user.controller.js';
-import { authMiddleware } from '../middleware/authMiddleware.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 export const userRouter = Router();
 

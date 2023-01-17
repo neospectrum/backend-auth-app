@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import { router } from './routes/index.js';
-import { errorMiddleware } from './middleware/errorMiddleware.js';
+import { errorMiddleware } from './middlewares/errorMiddleware.js';
 
 dotenv.config();
 
