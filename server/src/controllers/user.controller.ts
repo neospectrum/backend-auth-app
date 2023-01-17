@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import { validationResult, body } from 'express-validator';
 import dotenv from 'dotenv';
-import colors from 'colors';
 
 import { ApiError } from '../error/ApiError.js';
 import { userService } from '../services/user.service.js';
 
 dotenv.config();
 
+// Typings
 interface UserAuthData {
     email: string;
     password: string;
@@ -25,13 +25,22 @@ interface CustomRequestWithCookie<T> extends Request {
     cookies: T;
 }
 
+interface CustomResponse<T> extends Response {
+    body: T;
+}
+
+// Enter ORIGIN_URL in .env file
 const clientURL = process.env.ORIGIN_URL || '';
 
+// Class which controls user routes
 class UserController {
-    async registration(req: CustomRequest<UserAuthData>, res: Response, next: Function) {
+    async registration(
+        req: CustomRequest<UserAuthData>,
+        res: Response,
+        next: Function,
+    ): Promise<Response | undefined> {
         try {
             const errors = validationResult(req);
-
             if (!errors.isEmpty()) {
                 return next(ApiError.badRequest('Ошибка при валидации', errors.array()));
             }
@@ -39,6 +48,7 @@ class UserController {
             const { email, password } = req.body;
             const userData = await userService.registration(email, password);
 
+            // Setting refresh token in cookies
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
@@ -49,11 +59,16 @@ class UserController {
             next(error);
         }
     }
-    async login(req: CustomRequest<UserAuthData>, res: Response, next: Function) {
+    async login(
+        req: CustomRequest<UserAuthData>,
+        res: Response,
+        next: Function,
+    ): Promise<Response | undefined> {
         try {
             const { email, password } = req.body;
             const userData = await userService.login(email, password);
 
+            // Setting refresh token in cookies
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
@@ -64,7 +79,11 @@ class UserController {
             next(error);
         }
     }
-    async logout(req: CustomRequestWithCookie<UserRefreshToken>, res: Response, next: Function) {
+    async logout(
+        req: CustomRequestWithCookie<UserRefreshToken>,
+        res: Response,
+        next: Function,
+    ): Promise<Response | undefined> {
         try {
             const { refreshToken } = req.cookies;
             const token = await userService.logout(refreshToken);
@@ -86,11 +105,16 @@ class UserController {
             next(error);
         }
     }
-    async refresh(req: CustomRequestWithCookie<UserRefreshToken>, res: Response, next: Function) {
+    async refresh(
+        req: CustomRequestWithCookie<UserRefreshToken>,
+        res: Response,
+        next: Function,
+    ): Promise<Response | undefined> {
         try {
             const { refreshToken } = req.cookies;
             const userData = await userService.refresh(refreshToken);
 
+            // Setting refresh token in cookies
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
@@ -101,7 +125,7 @@ class UserController {
             next(error);
         }
     }
-    async getUsers(req: Request, res: Response, next: Function) {
+    async getUsers(req: Request, res: Response, next: Function): Promise<Response | undefined> {
         try {
             const users = await userService.getUsers();
 
