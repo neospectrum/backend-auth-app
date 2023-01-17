@@ -1,3 +1,4 @@
+// User Data Transfer Object
 export class UserDto {
     email: string;
     id: string;
