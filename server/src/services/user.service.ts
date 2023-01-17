@@ -31,6 +31,7 @@ class UserService {
             if (!tokens) {
                 throw ApiError.notFound('TOKENS NOT FOUND');
             }
+
             await tokenService.saveToken(user.id, tokens.refreshToken);
 
             return {
@@ -58,6 +59,7 @@ class UserService {
             if (!tokens) {
                 throw ApiError.notFound('TOKENS NOT FOUND');
             }
+
             await tokenService.saveToken(userDto.id, tokens.refreshToken);
             return {
                 ...tokens,

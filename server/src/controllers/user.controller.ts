@@ -31,17 +31,19 @@ class UserController {
     async registration(req: CustomRequest<UserAuthData>, res: Response, next: Function) {
         try {
             const errors = validationResult(req);
+
             if (!errors.isEmpty()) {
                 return next(ApiError.badRequest('Ошибка при валидации', errors.array()));
             }
 
             const { email, password } = req.body;
             const userData = await userService.registration(email, password);
-            console.log(userData?.refreshToken);
+
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
             });
+
             return res.json(userData);
         } catch (error) {
             next(error);
@@ -56,6 +58,7 @@ class UserController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
             });
+
             return res.json(userData);
         } catch (error) {
             next(error);
@@ -65,7 +68,9 @@ class UserController {
         try {
             const { refreshToken } = req.cookies;
             const token = await userService.logout(refreshToken);
+
             res.clearCookie('refreshToken');
+
             return res.json(token);
         } catch (error) {
             next(error);
@@ -75,6 +80,7 @@ class UserController {
         try {
             const activationLink = req.params.link;
             await userService.activate(activationLink);
+
             return res.redirect(clientURL);
         } catch (error) {
             next(error);
@@ -83,13 +89,13 @@ class UserController {
     async refresh(req: CustomRequestWithCookie<UserRefreshToken>, res: Response, next: Function) {
         try {
             const { refreshToken } = req.cookies;
-
             const userData = await userService.refresh(refreshToken);
 
             res.cookie('refreshToken', userData?.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
             });
+
             return res.json(userData);
         } catch (error) {
             next(error);
@@ -98,6 +104,7 @@ class UserController {
     async getUsers(req: Request, res: Response, next: Function) {
         try {
             const users = await userService.getUsers();
+
             return res.json(users);
         } catch (error) {
             next(error);
