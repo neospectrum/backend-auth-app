@@ -2,10 +2,17 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useActions } from '../hooks/useActions';
 import { RouteNames } from '../routes/routes';
+import { useLogoutMutation } from '../services/user';
 
 export const Home = () => {
     const { logOut } = useActions();
+    const [logOutServer] = useLogoutMutation();
     // const { data } = useGetUsersQuery('');
+
+    const exit = () => {
+        logOutServer('');
+        logOut();
+    };
     return (
         <div className='wrapper'>
             <header className='header'>
@@ -15,7 +22,7 @@ export const Home = () => {
                             <li>
                                 <NavLink
                                     to={RouteNames.LOGIN_ROUTE}
-                                    onClick={() => logOut()}
+                                    onClick={() => exit()}
                                 >
                                     Log out
                                 </NavLink>
