@@ -37,7 +37,10 @@ const userSlice = createSlice({
             state.isAuth = true;
             state.token = accessToken;
         },
-        logOut: () => initialState,
+        logOut: () => {
+            localStorage.removeItem('token');
+            return initialState;
+        },
         checkAuth: (state, action: PayloadAction<IUserResponse>) => {
             const { accessToken, user } = action.payload;
             localStorage.setItem('token', JSON.stringify(accessToken));
