@@ -1,3 +1,4 @@
+import { Favorites } from './../pages/Favorites';
 import { Services } from './../pages/Services';
 import { Friends } from '../pages/Friends';
 import { Materials } from '../pages/Materials';
@@ -38,4 +39,5 @@ export const privateRoutes: IRoute[] = [
     { path: RouteNames.MATERIAL_ROUTE, element: Materials },
     { path: RouteNames.SERVICE_ROUTE, element: Services },
     { path: RouteNames.SETTINGS_ROUTE, element: Settings },
+    { path: RouteNames.FAVORITE_ROUTE, element: Favorites },
 ];
