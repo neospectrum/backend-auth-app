@@ -9,3 +9,12 @@ export interface IUserData {
     refreshToken: string;
     user: IUser;
 }
+
+export interface UserAuthData {
+    email: string;
+    password: string;
+}
+
+export interface UserRefreshToken {
+    refreshToken: string;
+}
