@@ -1,9 +1,18 @@
-import { IUser } from '../models/IUser';
+import { IUser } from './../models/IUser';
 import { api } from './api';
 
 interface IUserAuthData {
     email: string;
     password: string;
+}
+
+export interface IUserData {
+    _id: string;
+    __v: string;
+    email: string;
+    passwrod: string;
+    isActivated: boolean;
+    activationLink: string;
 }
 
 export interface IUserResponse {
@@ -59,6 +68,15 @@ const userApi = api.injectEndpoints({
             query: () => ({
                 url: '/user/users',
             }),
+            transformResponse: (response: IUserData[]) => {
+                const users: IUser[] = response.map(({ email, _id, isActivated }) => ({
+                    email,
+                    id: _id,
+                    isActivated,
+                }));
+
+                return users;
+            },
             transformErrorResponse: (error) => {
                 return error.data;
             },
