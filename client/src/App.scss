@@ -111,9 +111,12 @@ aside {
         background-color: $color-gray;
     }
 }
-a.active {
-    color: rgba($color: $color-blue, $alpha: 1.5);
+a {
+    color: $color-blue;
 }
+// a.active {
+//     color: rgba($color: $color-blue, $alpha: 1.5);
+// }
 
 .container {
     max-width: rem($maxWidthContainer);
@@ -125,7 +128,7 @@ form {
     flex-flow: column;
     gap: 15px;
     padding: 20px;
-    max-width: em(440);
+    width: em(300);
     background-color: $color-white;
     border-radius: $border-radius;
     border: $border;
@@ -145,8 +148,12 @@ input {
 }
 
 button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     border-radius: $border-radius;
-    padding: 15px 10px;
+    padding: 20px 10px;
     background-color: $color-blue;
     color: $color-white;
     font-size: 1.1em;
@@ -172,9 +179,38 @@ button {
         align-items: center;
     }
 }
+.form-title {
+    display: flex;
+    justify-content: space-between;
+}
 
 .login {
     display: grid;
     place-items: center;
     min-height: 100vh;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.loader {
+    width: 30px;
+    height: 30px;
+    border: 5px solid #fff;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
