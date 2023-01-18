@@ -20,9 +20,9 @@ const app = express();
 
 // Middlewares, routes and other
 app.use(morgan('dev'));
-app.use(cors({ origin, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin, credentials: true }));
 app.use('/api', router);
 app.use(errorMiddleware);
 
