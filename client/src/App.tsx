@@ -1,11 +1,16 @@
+import { useEffect } from 'react';
 import './App.scss';
-import React, { useEffect } from 'react';
 import { Router } from './components/Router';
-import { useLazyRefreshQuery } from './services/user';
+import { Aside } from './components/Skelet/Aside';
+import { Header } from './components/Skelet/Header';
+import { Layout } from './components/Skelet/Layout';
+import { Main } from './components/Skelet/Main';
+import { Wrapper } from './components/Skelet/Wrapper';
 import { useActions } from './hooks/useActions';
+import { useLazyRefreshQuery } from './services/user';
 
 export const App = () => {
-    const [refresh, { data }] = useLazyRefreshQuery();
+    const [refresh] = useLazyRefreshQuery();
     const { checkAuth } = useActions();
 
     const checkUser = async () => {
@@ -18,5 +23,16 @@ export const App = () => {
     useEffect(() => {
         checkUser();
     }, []);
-    return <Router />;
+
+    return (
+        <Wrapper>
+            <Header />
+            <Layout>
+                <Aside />
+                <Main>
+                    <Router />
+                </Main>
+            </Layout>
+        </Wrapper>
+    );
 };

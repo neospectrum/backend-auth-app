@@ -94,8 +94,10 @@ header {
     background-color: $color-blue;
 }
 main {
-    display: flex;
-    padding: 5px;
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px;
+    background-color: $color-white;
 }
 aside {
     display: grid;
@@ -213,4 +215,8 @@ body {
     100% {
         transform: rotate(360deg);
     }
+}
+
+.drag {
+    cursor: grab;
 }
