@@ -21,6 +21,9 @@ const userApi = api.injectEndpoints({
                 body: user,
             }),
             invalidatesTags: () => ['User'],
+            transformErrorResponse: (error) => {
+                return error.data;
+            },
         }),
         login: build.mutation<IUserResponse, IUserAuthData>({
             query: (user: IUserAuthData) => ({
@@ -29,6 +32,9 @@ const userApi = api.injectEndpoints({
                 body: user,
             }),
             invalidatesTags: () => ['User'],
+            transformErrorResponse: (error) => {
+                return error.data;
+            },
         }),
         logout: build.mutation<any, any>({
             query: () => ({
@@ -36,17 +42,26 @@ const userApi = api.injectEndpoints({
                 method: 'POST',
                 credentials: 'include',
             }),
+            transformErrorResponse: (error) => {
+                return error.data;
+            },
         }),
         refresh: build.query<any, any>({
             query: () => ({
                 url: '/user/refresh',
                 credentials: 'include',
             }),
+            transformErrorResponse: (error) => {
+                return error.data;
+            },
         }),
         getUsers: build.query<IUser[], any>({
             query: () => ({
                 url: '/user/users',
             }),
+            transformErrorResponse: (error) => {
+                return error.data;
+            },
         }),
     }),
 });

@@ -12,10 +12,8 @@ const baseQuery = fetchBaseQuery({
     credentials: 'include',
 });
 
-const baseQueryWithRetry = retry(baseQuery, { maxRetries: 5 });
-
 export const api = createApi({
-    baseQuery: baseQueryWithRetry,
+    baseQuery,
     tagTypes: ['User'],
     endpoints: () => ({}),
 });
