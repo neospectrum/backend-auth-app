@@ -31,7 +31,7 @@ const start = async () => {
     try {
         await mongoose.connect(db);
         app.listen(port, () => {
-            console.log(`Server started on PORT:${colors.america(port.toString())}`);
+            console.log(`Server started on PORT:${colors.green(port.toString())}`);
         });
     } catch (error) {
         console.log(error);
