@@ -13,6 +13,7 @@ export const Home = () => {
         logOutServer('');
         logOut();
     };
+
     return (
         <div className='wrapper'>
             <header className='header'>
@@ -23,6 +24,7 @@ export const Home = () => {
                                 <NavLink
                                     to={RouteNames.LOGIN_ROUTE}
                                     onClick={() => exit()}
+                                    style={{ color: 'white' }}
                                 >
                                     Log out
                                 </NavLink>
