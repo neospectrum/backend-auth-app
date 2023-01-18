@@ -12,71 +12,61 @@ class UserService {
     // Function which generates hashed password and new tokens for User
     // Registering user in DB
     async registration(email: string, password: string): Promise<IUserData | undefined> {
-        try {
-            // Finding user in DB
-            const candidate = await UserModel.findOne({ email });
-            if (candidate) {
-                throw ApiError.badRequest(
-                    `Пользователь с почтовым адресом ${email} уже существует`,
-                );
-            }
-
-            // Generating hashed password
-            const salt = genSaltSync(5);
-            const hashPassword = hashSync(password, salt);
-            const activationLink = generateIdV4();
-
-            // Creating user in DB
-            const user = await UserModel.create({ email, password: hashPassword, activationLink });
-            const userDto = new UserDto(user);
-
-            // Generating tokens for user
-            const tokens = await tokenService.generateTokens({ ...userDto });
-            if (!tokens) {
-                throw ApiError.notFound('TOKENS NOT FOUND');
-            }
-            await tokenService.saveToken(user.id, tokens.refreshToken);
-
-            // Sending userData to controller
-            return {
-                ...tokens,
-                user: userDto,
-            };
-        } catch (error) {
-            console.log(error);
+        // Finding user in DB
+        const candidate = await UserModel.findOne({ email });
+        if (candidate) {
+            throw ApiError.badRequest(`Пользователь с почтовым адресом ${email} уже существует`);
         }
+
+        // Generating hashed password
+        const salt = genSaltSync(5);
+        const hashPassword = hashSync(password, salt);
+        const activationLink = generateIdV4();
+
+        // Creating user in DB
+        const user = await UserModel.create({ email, password: hashPassword, activationLink });
+        const userDto = new UserDto(user);
+
+        // Generating tokens for user
+        const tokens = await tokenService.generateTokens({ ...userDto });
+        if (!tokens) {
+            throw ApiError.notFound('TOKENS NOT FOUND');
+        }
+        await tokenService.saveToken(user.id, tokens.refreshToken);
+
+        // Sending userData to controller
+        return {
+            ...tokens,
+            user: userDto,
+        };
     }
     // Function which compares password and if its correct, we generate new tokens
     async login(email: string, password: string): Promise<IUserData | undefined> {
-        try {
-            // Finding user in DB
-            const candidate = await UserModel.findOne({ email });
-            if (!candidate) {
-                throw ApiError.badRequest('Пользователь с таким email не найден');
-            }
-
-            // Comparing password
-            const isCorrectPassword = compare(password, candidate.password);
-            if (!isCorrectPassword) {
-                throw ApiError.badRequest('Неверный пароль');
-            }
-
-            // Generating new tokens
-            const userDto = new UserDto(candidate);
-            const tokens = await tokenService.generateTokens({ ...userDto });
-            if (!tokens) {
-                throw ApiError.notFound('TOKENS NOT FOUND');
-            }
-            await tokenService.saveToken(userDto.id, tokens.refreshToken);
-
-            // Sending userData to controller
-            return {
-                ...tokens,
-                user: userDto,
-            };
-        } catch (error) {
-            console.log(error);
+        // Finding user in DB
+        const candidate = await UserModel.findOne({ email });
+        if (!candidate) {
+            throw ApiError.badRequest('Пользователь с таким email не найден');
         }
+
+        // Comparing password
+        const isCorrectPassword = compare(password, candidate.password);
+        if (!isCorrectPassword) {
+            throw ApiError.badRequest('Неверный пароль');
+        }
+
+        // Generating new tokens
+        const userDto = new UserDto(candidate);
+        const tokens = await tokenService.generateTokens({ ...userDto });
+        if (!tokens) {
+            throw ApiError.notFound('TOKENS NOT FOUND');
+        }
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+        // Sending userData to controller
+        return {
+            ...tokens,
+            user: userDto,
+        };
     }
     // If user logged out, then user refresh token will killed from DB
     async logout(refreshToken: string) {
@@ -86,57 +76,49 @@ class UserService {
     }
     // Finding user by activation link and if user exist we activate account
     async activate(activationLink: string): Promise<any> {
-        try {
-            // Activating E-mail: TODO
-            // Find user in DB
-            const user = await UserModel.findOne({ activationLink });
-            if (!user) {
-                throw ApiError.badRequest('Неккоректная ссылка активации');
-            }
-
-            // Saving is user account activated
-            user.isActivated = true;
-            await user.save();
-        } catch (error) {
-            console.log(error);
+        // Activating E-mail: TODO
+        // Find user in DB
+        const user = await UserModel.findOne({ activationLink });
+        if (!user) {
+            throw ApiError.badRequest('Неккоректная ссылка активации');
         }
+
+        // Saving is user account activated
+        user.isActivated = true;
+        await user.save();
     }
     // Validating token, finding it, and if it exist, generate new tokens and sending userData to controller
     async refresh(refreshToken: string): Promise<IUserData | undefined> {
-        try {
-            // Checking token
-            if (!refreshToken) {
-                throw ApiError.unauthorized();
-            }
-            // Validating and finding token in DB
-            const userData = await tokenService.validateRefreshToken(refreshToken);
-            const token = await tokenService.findToken(refreshToken);
-
-            if (!userData || !token) {
-                throw ApiError.unauthorized();
-            }
-            if (typeof userData === 'string') {
-                throw ApiError.unauthorized();
-            }
-            // Finding user and creating new tokens
-            const user = await UserModel.findById(userData.id);
-            const userDto = new UserDto(user);
-            const tokens = await tokenService.generateTokens({ ...userDto });
-
-            // Saving token
-            if (!tokens) {
-                throw ApiError.notFound('TOKENS NOT FOUND');
-            }
-            await tokenService.saveToken(userDto.id, tokens?.refreshToken);
-
-            // Sending userData to controller
-            return {
-                ...tokens,
-                user: userDto,
-            };
-        } catch (error) {
-            console.log(error);
+        // Checking token
+        if (!refreshToken) {
+            throw ApiError.unauthorized();
         }
+        // Validating and finding token in DB
+        const userData = await tokenService.validateRefreshToken(refreshToken);
+        const token = await tokenService.findToken(refreshToken);
+
+        if (!userData || !token) {
+            throw ApiError.unauthorized();
+        }
+        if (typeof userData === 'string') {
+            throw ApiError.unauthorized();
+        }
+        // Finding user and creating new tokens
+        const user = await UserModel.findById(userData.id);
+        const userDto = new UserDto(user);
+        const tokens = await tokenService.generateTokens({ ...userDto });
+
+        // Saving token
+        if (!tokens) {
+            throw ApiError.notFound('TOKENS NOT FOUND');
+        }
+        await tokenService.saveToken(userDto.id, tokens?.refreshToken);
+
+        // Sending userData to controller
+        return {
+            ...tokens,
+            user: userDto,
+        };
     }
     // Getting all users from DB
     async getUsers(): Promise<any | undefined> {
