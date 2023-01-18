@@ -28,7 +28,7 @@ class UserService {
         const userDto = new UserDto(user);
 
         // Generating tokens for user
-        const tokens = await tokenService.generateTokens({ ...userDto });
+        const tokens = tokenService.generateTokens({ ...userDto });
         if (!tokens) {
             throw ApiError.notFound('TOKENS NOT FOUND');
         }
@@ -56,7 +56,7 @@ class UserService {
 
         // Generating new tokens
         const userDto = new UserDto(candidate);
-        const tokens = await tokenService.generateTokens({ ...userDto });
+        const tokens = tokenService.generateTokens({ ...userDto });
         if (!tokens) {
             throw ApiError.notFound('TOKENS NOT FOUND');
         }
@@ -94,7 +94,7 @@ class UserService {
             throw ApiError.unauthorized();
         }
         // Validating and finding token in DB
-        const userData = await tokenService.validateRefreshToken(refreshToken);
+        const userData = tokenService.validateRefreshToken(refreshToken);
         const token = await tokenService.findToken(refreshToken);
 
         if (!userData || !token) {
@@ -106,7 +106,7 @@ class UserService {
         // Finding user and creating new tokens
         const user = await UserModel.findById(userData.id);
         const userDto = new UserDto(user);
-        const tokens = await tokenService.generateTokens({ ...userDto });
+        const tokens = tokenService.generateTokens({ ...userDto });
 
         // Saving token
         if (!tokens) {

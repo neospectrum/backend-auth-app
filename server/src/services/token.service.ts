@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import colors from 'colors';
 
 import { TokenModel } from '../models/token.model.js';
 import { IJWTokens } from '../types/interfaces/IJWTokens.js';
@@ -15,7 +16,7 @@ const refreshKey = process.env.JWT_REFRESH_SECRET || '12345';
 // Class which manipulating with JWT tokens and DB
 class TokenService {
     // Generating access token and refresh token
-    async generateTokens(payload: any): Promise<IJWTokens | undefined> {
+    generateTokens(payload: any): IJWTokens {
         // Generating new JWT tokens
         const accessToken = jwt.sign(payload, accessKey, { expiresIn: '1d' });
         const refreshToken = jwt.sign(payload, refreshKey, { expiresIn: '30d' });
@@ -27,14 +28,22 @@ class TokenService {
         };
     }
     // Validating access token
-    async validateAccessToken(token: string) {
-        const userData = jwt.verify(token, accessKey);
-        return userData;
+    validateAccessToken(token: string) {
+        try {
+            const userData = jwt.verify(token, accessKey);
+            return userData;
+        } catch (error) {
+            return null;
+        }
     }
     // Validating refresh token
-    async validateRefreshToken(token: string) {
-        const userData = jwt.verify(token, refreshKey);
-        return userData;
+    validateRefreshToken(token: string) {
+        try {
+            const userData = jwt.verify(token, refreshKey);
+            return userData;
+        } catch (error) {
+            return null;
+        }
     }
     // Saving refresh token in DB
     async saveToken(userId: string, refreshToken: string) {
