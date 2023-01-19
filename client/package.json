@@ -28,7 +28,7 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "build": "webpack --config webpack.config.js",
+        "build": "webpack serve --config webpack/webpack.config.js --open",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
     },
@@ -51,8 +51,13 @@
         ]
     },
     "devDependencies": {
+        "css-loader": "^6.7.3",
+        "html-webpack-plugin": "^5.5.0",
+        "scss-loader": "^0.0.1",
+        "style-loader": "^3.3.1",
         "typescript-plugin-css-modules": "^4.1.1",
         "webpack": "^5.75.0",
-        "webpack-cli": "^5.0.1"
+        "webpack-cli": "^5.0.1",
+        "webpack-dev-server": "^4.11.1"
     }
 }
