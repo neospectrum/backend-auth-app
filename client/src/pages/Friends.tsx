@@ -11,6 +11,4 @@ export const Friends = () => {
             ))}
         </div>
     );
-
-    //
 };
