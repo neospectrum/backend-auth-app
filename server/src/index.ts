@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 
 import { router } from './routes/index.routes.js';
-import { errorMiddleware } from './middlewares/errorMiddleware.js';
+import { errorMiddleware } from './middlewares/error.middleware.js';
 import { getDirName } from './helpers/getDirName.js';
 
 dotenv.config();
