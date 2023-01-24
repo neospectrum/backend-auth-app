@@ -37,6 +37,17 @@ class DeviceService {
 
         return devicesDto;
     }
+    async delete(name: string) {
+        const device = await DeviceModel.deleteOne({ name });
+
+        return device;
+    }
+    async update({ name, price, image }: IDevice) {
+        const device = await DeviceModel.updateOne({ name }, { name, price, image });
+        const deviceDto = new DeviceDto(device);
+
+        return deviceDto;
+    }
 }
 
 export const deviceService = new DeviceService();

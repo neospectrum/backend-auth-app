@@ -25,14 +25,24 @@ class DeviceController {
             next(error);
         }
     }
-    async delete(req: Request, res: Response, next: Function) {
+    async delete(req: CustomRequest<{ name: string }>, res: Response, next: Function) {
         try {
+            const { name } = req.body;
+
+            const device = await deviceService.delete(name);
+
+            return res.json(device);
         } catch (error) {
             next(error);
         }
     }
-    async update(req: Request, res: Response, next: Function) {
+    async update(req: CustomRequest<IDevice>, res: Response, next: Function) {
         try {
+            const { name, price, image } = req.body;
+
+            const device = await deviceService.update({ name, price, image });
+
+            return res.json(device);
         } catch (error) {
             next(error);
         }
@@ -43,7 +53,7 @@ class DeviceController {
 
             const device = await deviceService.findOne(name);
 
-            return device;
+            return res.json(device);
         } catch (error) {
             next(error);
         }
@@ -52,7 +62,7 @@ class DeviceController {
         try {
             const devices = await deviceService.findAll();
 
-            return devices;
+            return res.json(devices);
         } catch (error) {
             next(error);
         }
