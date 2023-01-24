@@ -1,13 +1,16 @@
 import express from 'express';
-import cors from 'cors';
 import colors from 'colors';
 import morgan from 'morgan';
-import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import path from 'path';
+import cors from 'cors';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import fileUpload from 'express-fileupload';
 
-import { router } from './routes/index.js';
+import { router } from './routes/index.routes.js';
 import { errorMiddleware } from './middlewares/errorMiddleware.js';
+import { getDirName } from './helpers/getDirName.js';
 
 dotenv.config();
 
@@ -17,12 +20,15 @@ const origin = process.env.ORIGIN_URL || '';
 const db = process.env.MONGO_URL || '';
 
 const app = express();
+const dirname = getDirName();
 
 // Middlewares, routes and other
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin, credentials: true }));
+app.use(express.static(path.resolve(dirname, 'static')));
+app.use(fileUpload({}));
 app.use('/api', router);
 app.use(errorMiddleware);
 
