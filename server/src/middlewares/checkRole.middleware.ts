@@ -10,6 +10,9 @@ type Roles = 'USER' | 'ADMIN';
 
 export const checkRoleMiddleware = (role: Roles) => {
     return (req: any, res: Response, next: Function) => {
+        if (req.method === 'OPTIONS') {
+            next();
+        }
         try {
             const authorizationHeader = req.headers.authorization;
             if (!authorizationHeader) {
@@ -18,16 +21,17 @@ export const checkRoleMiddleware = (role: Roles) => {
 
             const accessToken = authorizationHeader.split(' ')[1];
             if (!accessToken) {
-                throw ApiError.unauthorized();
+                return next(ApiError.unauthorized());
             }
-            const userData = tokenService.validateAccessToken(accessToken);
-            // if (decoded.role !== role) {
-            //     return res.status(403).json({ message: 'Нет доступа' });
-            // }
+            const userData: any = tokenService.validateAccessToken(accessToken);
+            if (userData.role !== role) {
+                return next(ApiError.notAcceptable('Access denied'));
+            }
+
             req.user = userData;
             next();
         } catch (e) {
-            res.status(401).json({ message: 'Не авторизован' });
+            return next(ApiError.unauthorized());
         }
     };
 };
