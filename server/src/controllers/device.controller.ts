@@ -1,24 +1,20 @@
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import colors from 'colors';
 import dotenv from 'dotenv';
 
 import { CustomRequest } from './../types/interfaces/IRequest.js';
 import { deviceService } from '../services/device.service.js';
+import { IDevice } from '../types/interfaces/IDevice.js';
 
 dotenv.config();
-
-export interface IDevice {
-    name: string;
-    price: number;
-    image: string;
-}
 
 class DeviceController {
     async create(req: CustomRequest<IDevice>, res: Response, next: Function) {
         try {
-            const { name, price, image } = req.body;
+            const { name, price, info } = req.body;
+            const { image } = req.files!;
 
-            const device = await deviceService.create({ name, price, image });
+            const device = await deviceService.create({ name, price, image, info });
 
             return res.json(device);
         } catch (error) {
