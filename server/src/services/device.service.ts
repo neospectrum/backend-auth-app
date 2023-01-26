@@ -1,8 +1,8 @@
 import path from 'path';
 import { v4 as uuidV4 } from 'uuid';
 
-import { IDevice } from '../controllers/device.controller.js';
 import { DeviceInfoModel } from '../models/device-info.model.js';
+import { IDevice } from '../types/interfaces/IDevice.js';
 import { DeviceDto } from './../dtos/device.dto.js';
 import { ApiError } from './../error/ApiError.js';
 import { DeviceModel } from './../models/device.model.js';
