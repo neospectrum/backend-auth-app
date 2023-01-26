@@ -30,7 +30,6 @@ export const checkRoleMiddleware = (role: Roles) => {
 
             req.user = userData;
             next();
-            //
         } catch (e) {
             return next(ApiError.unauthorized());
         }
