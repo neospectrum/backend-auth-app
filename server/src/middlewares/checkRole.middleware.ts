@@ -23,6 +23,7 @@ export const checkRoleMiddleware = (role: Roles) => {
             if (!accessToken) {
                 return next(ApiError.unauthorized());
             }
+
             const userData: any = tokenService.validateAccessToken(accessToken);
             if (userData.role !== role) {
                 return next(ApiError.notAcceptable('Access denied'));
