@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import './App.scss';
+import { useEffect } from 'react';
+
 import { Router } from './components/Router';
 import { Aside } from './components/Skelet/Aside';
 import { Header } from './components/Skelet/Header';
@@ -27,6 +27,7 @@ export const App = () => {
         checkUser();
     }, []);
 
+    
     return (
         <Wrapper>
             {isAuth ? (
