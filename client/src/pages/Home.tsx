@@ -4,7 +4,7 @@ import { Layout } from '../components/Skelet/Layout';
 export const Home = () => {
     return (
         <Layout>
-            <main></main>
+            <main>Home</main>
         </Layout>
     );
 };
