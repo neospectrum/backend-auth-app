@@ -27,7 +27,6 @@ export const App = () => {
         checkUser();
     }, []);
 
-    
     return (
         <Wrapper>
             {isAuth ? (
