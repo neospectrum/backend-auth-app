@@ -31,6 +31,8 @@ export const publicRoutes: IRoute[] = [
     { path: RouteNames.REGISTRATION_ROUTE, element: Auth },
 ];
 
+
+
 export const privateRoutes: IRoute[] = [
     { path: RouteNames.HOME_ROUTE, element: Home },
     { path: RouteNames.PROFILE_ROUTE, element: Profile },
